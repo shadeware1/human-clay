@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debloater Setup</title>
+  <script src="https://kit.fontawesome.com/a2d9d5d66e.js" crossorigin="anonymous"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    #logo {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 100px;
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1, p, button, .btn {
+      color: white;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .active {
+      display: flex;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .btn {
+      background: #1a1a1f;
+      border: 1px solid #2c2c36;
+      padding: 30px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+    }
+
+    .btn:hover {
+      background: #2a2a35;
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+    }
+
+    .btn img {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 12px;
+    }
+
+    .btn i {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .loader {
+      border: 5px solid #444;
+      border-top: 5px solid #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 30px 0;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      color: #ff4d4d;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #00ff99;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    button.btn {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 16px 32px;
+    }
+  </style>
+</head>
+<body>
+  <img id="logo" src="shader.jpeg" alt="logo" />
+  <div id="adminScreen" class="center screen active">
+    <h1>⚠️ Please Run as Administrator</h1>
+    <p>This tool needs elevated permissions to make system-level changes.</p>
+    <button class="btn" onclick="showBrowserScreen()">I'm Running as Admin</button>
+  </div>
+
+  <div id="browserScreen" class="center screen">
+    <h1>Choose a Browser to Install</h1>
+    <div class="button-grid">
+      <div class="btn" onclick="installBrowser('Chrome')">
+        <img src="chrome.png" alt="Chrome" />
+        Chrome
+      </div>
+      <div class="btn" onclick="installBrowser('Brave')">
+        <img src="brave.png" alt="Brave" />
+        Brave
+      </div>
+      <div class="btn" onclick="installBrowser('LibreWolf')">
+        <img src="librewolf.png" alt="LibreWolf" />
+        LibreWolf
+      </div>
+      <div class="btn" onclick="installBrowser('Chromium')">
+        <img src="chromium.png" alt="Chromium" />
+        Chromium
+      </div>
+      <div class="btn" onclick="installBrowser('Firefox')">
+        <img src="firefox.png" alt="Firefox" />
+        Firefox
+      </div>
+      <div class="btn" onclick="installBrowser('Edge')">
+        <img src="edge.png" alt="Edge" />
+        Edge
+      </div>
+    </div>
+    <br />
+    <button class="btn" onclick="skipBrowser()">Skip This Step</button>
+  </div>
+
+  <div id="browserInstalling" class="center screen">
+    <h1 id="browserInstallingText">Installing...</h1>
+    <div class="loader"></div>
+    <div id="browserStatus"></div>
+  </div>
+
+  <div id="setupScreen" class="center screen">
+    <h1>Select a Setup</h1>
+    <div class="button-grid">
+      <div class="btn" onclick="runSetup('Gamer')">
+        <i class="fas fa-gamepad"></i>
+        Gamer Setup
+      </div>
+      <div class="btn" onclick="runSetup('Coder')">
+        <i class="fas fa-code"></i>
+        Coder Setup
+      </div>
+      <div class="btn" onclick="runSetup('Hacker')">
+        <i class="fas fa-terminal"></i>
+        Hacker Setup
+      </div>
+      <div class="btn" onclick="runSetup('MSOffice')">
+        <i class="fas fa-file-word"></i>
+        Office Setup (MS)
+      </div>
+      <div class="btn" onclick="runSetup('GoogleOffice')">
+        <i class="fas fa-cloud"></i>
+        Office Setup (Google)
+      </div>
+    </div>
+    <br />
+    <button class="btn" onclick="goToAdvanced()">Advanced</button>
+  </div>
+
+  <div id="setupLoading" class="center screen">
+    <h1 id="setupLoadingText">Installing Setup...</h1>
+    <div class="loader"></div>
+    <div id="setupStatus"></div>
+  </div>
+
+  <script>
+    function showBrowserScreen() {
+      showScreen('browserScreen');
+    }
+
+    function installBrowser(name) {
+      showScreen('browserInstalling');
+      document.getElementById('browserInstallingText').innerText = `Installing ${name}...`;
+      const script = require('child_process').spawn(`${name.toLowerCase()}.bat`, [], { shell: true });
+      script.on('exit', code => {
+        if (code === 0) {
+          document.getElementById('browserStatus').innerHTML = '<div class="success">Installed Successfully</div>';
+          setTimeout(() => showScreen('setupScreen'), 2000);
+        } else {
+          document.getElementById('browserStatus').innerHTML = '<div class="error">Failed to Install</div>';
+        }
+      });
+    }
+
+    function skipBrowser() {
+      showScreen('setupScreen');
+    }
+
+    function runSetup(type) {
+      showScreen('setupLoading');
+      document.getElementById('setupLoadingText').innerText = `Installing ${type} Setup...`;
+      const script = require('child_process').spawn(`${type.toLowerCase()}.bat`, [], { shell: true });
+      script.on('exit', code => {
+        if (code === 0) {
+          document.getElementById('setupStatus').innerHTML = '<div class="success">Setup Completed</div>';
+        } else {
+          document.getElementById('setupStatus').innerHTML = '<div class="error">Setup Failed</div>';
+        }
+      });
+    }
+
+    function goToAdvanced() {
+      location.href = 'advanced.html';
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+</body>
+</html>
